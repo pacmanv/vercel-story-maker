@@ -51,7 +51,7 @@ module.exports = async function handler(req, res) {
       },
       body: JSON.stringify({
         model: "claude-sonnet-5",
-        max_tokens: 2000,
+        max_tokens: 3000,
         messages: [{ role: "user", content: prompt }]
       })
     });
@@ -60,12 +60,29 @@ module.exports = async function handler(req, res) {
       return res.status(429).json({ error: "rate_limited" });
     }
     if (!upstream.ok) {
+      const errBody = await upstream.text().catch(() => "");
+      console.error("Anthropic API error", upstream.status, errBody.slice(0, 2000));
       return res.status(502).json({ error: "upstream_error" });
     }
 
     const data = await upstream.json();
-    const text = data && data.content && data.content[0] && data.content[0].text;
+
+    // Pull out every text block (the response can include non-text blocks,
+    // e.g. a "thinking" block, ahead of the actual answer) and concatenate
+    // them, rather than assuming content[0] is the text block.
+    const blocks = Array.isArray(data && data.content) ? data.content : [];
+    const text = blocks
+      .filter((b) => b && b.type === "text" && typeof b.text === "string")
+      .map((b) => b.text)
+      .join("");
+
     if (!text) {
+      console.error(
+        "Empty completion. stop_reason=%s content_types=%s raw=%s",
+        data && data.stop_reason,
+        blocks.map((b) => b && b.type).join(","),
+        JSON.stringify(data).slice(0, 2000)
+      );
       return res.status(502).json({ error: "empty_completion" });
     }
 
