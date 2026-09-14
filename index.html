@@ -1,0 +1,1098 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Bedtime Story Maker</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Literata:ital,opsz,wght@0,18..144,400;0,18..144,500;0,18..144,600;1,18..144,400&display=swap">
+<style>
+  :root{
+    /* Dark storybook palette (shared by the hero band and the whole page) */
+    --paper:#170f36;
+    --paper-card:#241a52;
+    --paper-deep:#362a70;
+    --night-deep:#170f36;
+    --night:#241a52;
+    --night-soft:#362a70;
+    --ink:#f4f1ff;
+    --ink-soft:#b7bce6;
+    --ink-faint:#8489bd;
+    --cream:#f6f1ff;
+    --gold:#d99a3f;
+    --gold-light:#f3c876;
+    --gold-ink:#4a2f08;
+    --accent:#7b6fd6;
+    --accent-soft:#e7e2fb;
+    --shadow-sm: 0 6px 16px -9px rgba(0,0,0,0.45);
+    --shadow-md: 0 16px 32px -14px rgba(0,0,0,0.50);
+    --shadow-lg: 0 26px 52px -20px rgba(0,0,0,0.60);
+  }
+
+  *{ box-sizing:border-box; }
+
+  html{
+    min-height: 100%;
+    background: var(--paper);
+  }
+
+  body{
+    margin:0;
+    min-height: 100vh;
+    min-height: 100dvh;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: 'Baloo 2', ui-rounded, 'Segoe UI', system-ui, sans-serif;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  h1,h2,h3,p{ margin:0; }
+
+  /* ---------- Hero / storybook cover ---------- */
+
+  .hero-sky{
+    position:relative;
+    width:100%;
+    overflow:hidden;
+    background:
+      radial-gradient(1.6px 1.6px at 10% 22%, #fff, transparent),
+      radial-gradient(1.6px 1.6px at 24% 65%, #fff, transparent),
+      radial-gradient(1.1px 1.1px at 36% 30%, #fff, transparent),
+      radial-gradient(1.6px 1.6px at 50% 78%, #fff, transparent),
+      radial-gradient(1.1px 1.1px at 64% 18%, #fff, transparent),
+      radial-gradient(1.6px 1.6px at 79% 52%, #fff, transparent),
+      radial-gradient(1.1px 1.1px at 89% 28%, #fff, transparent),
+      radial-gradient(1.6px 1.6px at 94% 70%, #fff, transparent),
+      radial-gradient(1.1px 1.1px at 16% 88%, #fff, transparent),
+      radial-gradient(1.1px 1.1px at 58% 46%, #fff, transparent),
+      linear-gradient(160deg, var(--night-deep), var(--night) 55%, var(--night-soft));
+    border-radius: 0 0 32px 32px;
+    box-shadow: var(--shadow-lg);
+  }
+
+  .hero-inner{
+    max-width: 620px;
+    margin: 0 auto;
+    padding: 44px 24px 60px;
+    text-align:center;
+  }
+
+  .moon{
+    display:block;
+    margin: 0 auto 16px;
+    filter: drop-shadow(0 0 14px rgba(255,191,92,0.45));
+  }
+
+  .sparkle{
+    position:absolute;
+    color: var(--gold-light);
+    opacity:.85;
+    animation: twinkle 3.4s ease-in-out infinite;
+  }
+  .sparkle.s1{ top: 26%; left: 14%; font-size: 14px; animation-delay: .2s; }
+  .sparkle.s2{ top: 62%; right: 12%; font-size: 11px; animation-delay: 1.1s; }
+  .sparkle.s3{ top: 18%; right: 22%; font-size: 9px; animation-delay: 2s; }
+
+  @keyframes twinkle{
+    0%,100%{ opacity:.25; transform: scale(0.85); }
+    50%{ opacity: 1; transform: scale(1); }
+  }
+
+  .eyebrow{
+    font-family: 'Baloo 2', sans-serif;
+    font-weight:700;
+    font-size: 12.5px;
+    letter-spacing: 0.18em;
+    color: var(--gold-light);
+    text-transform: uppercase;
+    margin: 0 0 12px;
+  }
+
+  h1{
+    color: var(--cream);
+    font-size: clamp(30px, 6.4vw, 46px);
+    line-height:1.12;
+    text-wrap: balance;
+    font-weight: 800;
+    margin-bottom: 14px;
+  }
+
+  .sub{
+    color: #cbc3f2;
+    font-family: Literata, Georgia, serif;
+    font-style: italic;
+    font-size: 17px;
+    max-width: 42ch;
+    margin: 0 auto;
+    line-height:1.55;
+  }
+
+  /* ---------- Page / content ---------- */
+
+  .page{
+    max-width: 700px;
+    margin: 0 auto;
+    padding: 30px 18px 90px;
+  }
+
+  .progress-trail{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:8px;
+    width: fit-content;
+    max-width: 100%;
+    margin: 0 auto 34px;
+    padding: 12px 18px;
+    background: var(--paper-card);
+    border-radius: 999px;
+    box-shadow: var(--shadow-md);
+    border: 1px solid rgba(255,255,255,0.08);
+  }
+
+  .progress-step{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:2px;
+    min-width: 46px;
+    opacity:.45;
+    transform: scale(0.96);
+    transition: opacity .25s ease, transform .25s ease;
+  }
+  .progress-step .ico{ font-size:19px; line-height:1; }
+  .progress-step .label{
+    font-size: 9.5px;
+    font-weight:700;
+    letter-spacing:.05em;
+    text-transform:uppercase;
+    color: var(--ink-soft);
+    white-space:nowrap;
+  }
+  .progress-step.done,
+  .progress-step.active{ opacity:1; transform: scale(1.08); }
+  .progress-step.active .label{ color: var(--gold); }
+
+  .progress-line{
+    width:18px;
+    height:2px;
+    border-radius:2px;
+    background: var(--paper-deep);
+    flex: none;
+  }
+
+  /* ---------- Step cards ---------- */
+
+  .step-card{
+    background: var(--paper-card);
+    border: 1px solid rgba(255,255,255,0.10);
+    border-radius: 26px;
+    padding: 26px clamp(18px, 4vw, 30px) 28px;
+    box-shadow: var(--shadow-sm);
+    margin-bottom: 22px;
+  }
+
+  .step-head{
+    display:flex;
+    align-items:flex-start;
+    gap:14px;
+    margin-bottom: 20px;
+  }
+
+  .step-num{
+    flex:none;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    width:34px; height:34px;
+    border-radius:50%;
+    background: linear-gradient(160deg, var(--gold-light), var(--gold));
+    color: var(--gold-ink);
+    font-weight:800;
+    font-size:15px;
+    box-shadow: 0 6px 14px -6px rgba(217,154,63,0.55);
+  }
+
+  .step-title{
+    font-size: 19px;
+    font-weight: 700;
+    color: var(--ink);
+    line-height:1.3;
+    text-wrap: balance;
+  }
+
+  .step-hint{
+    font-family: Literata, Georgia, serif;
+    font-style: italic;
+    color: var(--ink-soft);
+    font-size: 14.5px;
+    margin-top: 3px;
+  }
+
+  .mini-group{ margin-bottom: 18px; }
+  .mini-group:last-child{ margin-bottom:0; }
+
+  .mini-label{
+    font-size: 12.5px;
+    font-weight:700;
+    letter-spacing:.04em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin: 0 0 10px 2px;
+  }
+
+  /* ---------- Name field ---------- */
+
+  .name-field{ margin-top: 10px; }
+
+  .name-label{
+    display:block;
+    font-size: 12px;
+    font-weight:600;
+    color: var(--ink-faint);
+    margin: 0 0 6px 2px;
+  }
+  .name-label .optional{
+    font-weight:500;
+    opacity:.75;
+  }
+
+  .name-input{
+    display:block;
+    width:100%;
+    font-family:'Baloo 2', sans-serif;
+    font-size: 15px;
+    font-weight:600;
+    color: var(--ink);
+    background: var(--paper);
+    border: 1px solid rgba(255,255,255,0.10);
+    border-radius: 14px;
+    padding: 12px 14px;
+    box-shadow: var(--shadow-sm);
+    transition: border-color .15s ease, box-shadow .15s ease;
+  }
+  .name-input::placeholder{ color: var(--ink-faint); font-weight:500; }
+  .name-input:focus-visible{
+    outline:none;
+    border-color: var(--gold);
+    box-shadow: 0 0 0 3px rgba(217,154,63,0.22), var(--shadow-sm);
+  }
+
+  /* ---------- Choice grid / cards ---------- */
+
+  .grid{
+    display:grid;
+    grid-template-columns: repeat(auto-fill, minmax(112px, 1fr));
+    gap:11px;
+  }
+
+  .pick-btn{
+    position:relative;
+    font-family:'Baloo 2', sans-serif;
+    font-weight:600;
+    font-size:13.5px;
+    color: var(--ink-soft);
+    background: var(--paper);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 18px;
+    padding: 16px 8px 13px;
+    min-height: 92px;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    gap:8px;
+    cursor:pointer;
+    box-shadow: var(--shadow-sm);
+    transition: transform .15s ease, box-shadow .15s ease, border-color .15s ease, background .15s ease, color .15s ease;
+  }
+
+  .pick-btn .emoji{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    width:46px; height:46px;
+    border-radius:50%;
+    background: var(--paper-deep);
+    font-size: 24px;
+    line-height:1;
+    transition: transform .15s ease, background .15s ease;
+  }
+
+  .pick-btn:hover{
+    transform: translateY(-3px);
+    border-color: rgba(217,154,63,0.4);
+    box-shadow: var(--shadow-md);
+    color: var(--ink);
+  }
+
+  .pick-btn:active{
+    transform: translateY(-1px) scale(0.97);
+  }
+
+  .pick-btn:focus-visible{
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
+
+  .pick-btn[aria-pressed="true"]{
+    background: var(--paper-card);
+    border-color: var(--gold);
+    color: var(--ink);
+    box-shadow: 0 0 0 3px rgba(217,154,63,0.22), var(--shadow-md);
+  }
+
+  .pick-btn[aria-pressed="true"] .emoji{
+    background: linear-gradient(160deg, var(--gold-light), var(--gold));
+    transform: scale(1.06);
+  }
+
+  .pick-btn[aria-pressed="true"]::after{
+    content: "\2713";
+    position:absolute;
+    top:-6px; right:-6px;
+    width:21px; height:21px;
+    border-radius:50%;
+    background: var(--gold);
+    color:#fff9ec;
+    font-size:11px;
+    font-weight:800;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    box-shadow: 0 3px 8px -2px rgba(217,154,63,0.7);
+  }
+
+  .pick-btn.shake{
+    animation: shake .35s ease;
+  }
+
+  @keyframes shake{
+    0%,100%{ transform: translateX(0); }
+    25%{ transform: translateX(-4px); }
+    75%{ transform: translateX(4px); }
+  }
+
+  /* ---------- Recipe ticket + CTA ---------- */
+
+  .cta-card{
+    background: linear-gradient(175deg, var(--paper-card), var(--paper-deep));
+    border: 1px solid rgba(255,255,255,0.10);
+    border-radius: 26px;
+    padding: 28px clamp(18px, 4vw, 34px) 32px;
+    box-shadow: var(--shadow-md);
+    text-align:center;
+  }
+
+  .recipe{
+    font-family: Literata, Georgia, serif;
+    font-style: italic;
+    color: var(--ink-soft);
+    min-height: 26px;
+    margin: 0 0 24px;
+    font-size: 16px;
+    line-height:1.55;
+  }
+  .recipe strong{
+    color: var(--gold-light);
+    font-style: normal;
+    font-weight: 600;
+  }
+
+  .create-row{
+    display:flex;
+    justify-content:center;
+  }
+
+  #createBtn{
+    width:100%;
+    max-width: 360px;
+    font-family:'Baloo 2', sans-serif;
+    font-weight: 700;
+    font-size: 19px;
+    color: var(--gold-ink);
+    background: linear-gradient(160deg, var(--gold-light), var(--gold));
+    border: none;
+    border-radius: 999px;
+    padding: 18px 30px;
+    cursor:pointer;
+    box-shadow: 0 16px 30px -12px rgba(217,154,63,0.65);
+    transition: transform .12s ease, box-shadow .12s ease, opacity .12s ease;
+    animation: pulseGlow 2.6s ease-in-out infinite;
+  }
+  #createBtn:hover:not(:disabled){ transform: translateY(-2px); }
+  #createBtn:active:not(:disabled){ transform: translateY(0) scale(0.98); }
+  #createBtn:focus-visible{ outline: 2px solid var(--accent); outline-offset: 3px; }
+  #createBtn:disabled{
+    opacity:.4;
+    cursor:not-allowed;
+    box-shadow:none;
+    animation:none;
+  }
+
+  @keyframes pulseGlow{
+    0%,100%{ box-shadow: 0 16px 30px -12px rgba(217,154,63,0.65); }
+    50%{ box-shadow: 0 16px 34px -8px rgba(217,154,63,0.85); }
+  }
+
+  .status-note{
+    color: var(--ink-faint);
+    font-size: 13.5px;
+    margin-top:14px;
+    min-height: 18px;
+    font-family: Literata, Georgia, serif;
+    font-style: italic;
+  }
+
+  /* ---------- Result: loading / story / notice ---------- */
+
+  #result{ margin-top: 30px; }
+  #result[hidden]{ display:none; }
+
+  .loading{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:16px;
+    padding: 38px 10px 18px;
+    background: var(--paper-card);
+    border-radius: 26px;
+    box-shadow: var(--shadow-sm);
+  }
+
+  .loading-moon{
+    font-size: 40px;
+    animation: bob 1.8s ease-in-out infinite;
+  }
+  @keyframes bob{
+    0%,100%{ transform: translateY(0) rotate(-4deg); }
+    50%{ transform: translateY(-8px) rotate(4deg); }
+  }
+
+  .loading-text{
+    font-family: Literata, Georgia, serif;
+    font-style: italic;
+    color: var(--ink-soft);
+    font-size: 16px;
+    text-align:center;
+    min-height: 24px;
+  }
+
+  @keyframes storyIn{
+    from{ opacity:0; transform: translateY(16px); }
+    to{ opacity:1; transform: translateY(0); }
+  }
+
+  .story-card{
+    position:relative;
+    background: var(--paper-card);
+    border: 1px solid rgba(255,255,255,0.10);
+    border-radius: 28px;
+    padding: 40px clamp(22px, 6vw, 54px) 46px;
+    box-shadow: var(--shadow-lg);
+    overflow:hidden;
+    animation: storyIn .5s ease both;
+  }
+
+  .story-card::before{
+    content:"";
+    position:absolute;
+    left:0; top:0; bottom:0;
+    width:7px;
+    background: linear-gradient(180deg, var(--gold-light), var(--accent));
+  }
+
+  .story-meta{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:8px;
+    color: var(--gold-light);
+    background: var(--paper-deep);
+    width:fit-content;
+    margin: 0 auto 18px;
+    padding: 6px 14px;
+    border-radius: 999px;
+    font-size: 12.5px;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+
+  .story-title{
+    text-align:center;
+    font-size: clamp(25px, 4.6vw, 34px);
+    font-weight: 800;
+    color: var(--ink);
+    margin: 0 0 8px;
+    text-wrap: balance;
+  }
+
+  .story-divider{
+    text-align:center;
+    color: var(--gold);
+    letter-spacing: 10px;
+    font-size: 13px;
+    margin: 12px 0 26px;
+  }
+
+  .story-text{
+    font-family: Literata, Georgia, serif;
+    font-size: 18.5px;
+    line-height: 1.85;
+    color: #ece7ff;
+    max-width: 62ch;
+    margin: 0 auto;
+  }
+  .story-text p{
+    margin: 0 0 22px;
+  }
+  .story-text p:last-child{ margin-bottom:0; }
+  .story-text p:first-of-type::first-letter{
+    font-family: Literata, Georgia, serif;
+    font-weight: 600;
+    font-size: 3.1em;
+    line-height: 0.78;
+    float:left;
+    padding: 4px 9px 0 0;
+    color: var(--gold);
+  }
+
+  .again-row{
+    display:flex;
+    justify-content:center;
+    margin-top: 30px;
+  }
+
+  #againBtn{
+    font-family:'Baloo 2', sans-serif;
+    font-weight: 700;
+    font-size: 15px;
+    color: var(--ink);
+    background: var(--paper-card);
+    border: 1px solid rgba(255,255,255,0.16);
+    border-radius: 999px;
+    padding: 13px 26px;
+    cursor:pointer;
+    box-shadow: var(--shadow-sm);
+    transition: transform .12s ease, border-color .12s ease, box-shadow .12s ease;
+  }
+  #againBtn:hover{ transform: translateY(-2px); border-color: var(--gold); box-shadow: var(--shadow-md); }
+  #againBtn:active{ transform: translateY(0) scale(0.98); }
+  #againBtn:focus-visible{ outline: 2px solid var(--accent); outline-offset: 3px; }
+
+  .notice{
+    text-align:center;
+    font-family: Literata, Georgia, serif;
+    color: var(--ink-soft);
+    background: var(--paper-card);
+    border: 1px solid rgba(255,255,255,0.12);
+    border-radius: 20px;
+    padding: 22px 24px;
+    font-size: 15.5px;
+    line-height:1.6;
+    box-shadow: var(--shadow-sm);
+  }
+  .notice.error{
+    border-color: rgba(217,154,63,0.4);
+  }
+
+  footer.credit{
+    text-align:center;
+    color: var(--ink-faint);
+    font-size: 12.5px;
+    margin-top: 40px;
+    letter-spacing:0.04em;
+  }
+
+  @media (max-width: 480px){
+    .hero-inner{ padding: 36px 20px 52px; }
+    .step-card, .cta-card{ padding-left: 16px; padding-right:16px; }
+    #createBtn{ font-size: 18px; padding: 17px 24px; }
+    .story-card{ padding-left: 20px; padding-right: 20px; border-radius: 22px; }
+    .story-text{ font-size: 17.5px; }
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    .loading-moon, .sparkle, #createBtn, .story-card{ animation:none; }
+    .pick-btn, #createBtn, #againBtn, .progress-step{ transition:none; }
+  }
+</style>
+</head>
+<body>
+
+<div id="app">
+
+<div class="hero-sky">
+  <span class="sparkle s1" aria-hidden="true">&#10022;</span>
+  <span class="sparkle s2" aria-hidden="true">&#10022;</span>
+  <span class="sparkle s3" aria-hidden="true">&#10022;</span>
+  <div class="hero-inner">
+    <svg class="moon" width="46" height="46" viewBox="0 0 44 44" fill="none" aria-hidden="true">
+      <path d="M27 6C19.8 8.6 15 15.5 15 23.4c0 10.6 8.6 19.2 19.2 19.2 3 0 5.9-.7 8.4-1.9C37.8 44 30.6 47 22.7 46.3 12.1 45.3 4 36 4 25 4 13.9 12.6 4.4 23.6 4.1c1.2 0 2.3.6 3.4 1.9z" fill="#ffbf5c" transform="translate(-1 -3) scale(0.94)"/>
+    </svg>
+    <p class="eyebrow">Dad's Story Lab</p>
+    <h1>Bedtime Story Maker</h1>
+    <p class="sub">Choose your characters, your world, and your adventure &mdash; we'll write a cozy story just for you, ready to read aloud tonight.</p>
+  </div>
+</div>
+
+<div class="page">
+
+  <nav class="progress-trail" aria-hidden="true">
+    <div class="progress-step" data-step="1"><span class="ico">&#128062;</span><span class="label">Who</span></div>
+    <div class="progress-line"></div>
+    <div class="progress-step" data-step="2"><span class="ico">&#128506;&#65039;</span><span class="label">Where</span></div>
+    <div class="progress-line"></div>
+    <div class="progress-step" data-step="3"><span class="ico">&#127775;</span><span class="label">Adventure</span></div>
+    <div class="progress-line"></div>
+    <div class="progress-step" data-step="4"><span class="ico">&#128214;</span><span class="label">Story</span></div>
+  </nav>
+
+  <section class="step-card">
+    <div class="step-head">
+      <span class="step-num">1</span>
+      <div>
+        <h2 class="step-title">Who's going on the adventure?</h2>
+        <p class="step-hint">Pick two animal friends and a dinosaur pal to star in tonight's story</p>
+      </div>
+    </div>
+    <div class="mini-group">
+      <p class="mini-label">Your hero</p>
+      <div class="grid" id="grid-animal1" role="group" aria-label="Choose your first animal friend"></div>
+      <div class="name-field">
+        <label class="name-label" for="name-animal1">Give them a name? <span class="optional">(optional)</span></label>
+        <input type="text" id="name-animal1" class="name-input" maxlength="24" placeholder="e.g. Ruby" autocomplete="off">
+      </div>
+    </div>
+    <div class="mini-group">
+      <p class="mini-label">Their best friend</p>
+      <div class="grid" id="grid-animal2" role="group" aria-label="Choose your second animal friend"></div>
+      <div class="name-field">
+        <label class="name-label" for="name-animal2">Give them a name? <span class="optional">(optional)</span></label>
+        <input type="text" id="name-animal2" class="name-input" maxlength="24" placeholder="e.g. Pip" autocomplete="off">
+      </div>
+    </div>
+    <div class="mini-group">
+      <p class="mini-label">Their dinosaur friend</p>
+      <div class="grid" id="grid-dino" role="group" aria-label="Choose a dinosaur friend"></div>
+      <div class="name-field">
+        <label class="name-label" for="name-dino">Give them a name? <span class="optional">(optional)</span></label>
+        <input type="text" id="name-dino" class="name-input" maxlength="24" placeholder="e.g. Rex" autocomplete="off">
+      </div>
+    </div>
+  </section>
+
+  <section class="step-card">
+    <div class="step-head">
+      <span class="step-num">2</span>
+      <div>
+        <h2 class="step-title">Where does the adventure happen?</h2>
+        <p class="step-hint">Pick a magical place to explore</p>
+      </div>
+    </div>
+    <div class="grid" id="grid-setting" role="group" aria-label="Choose a setting"></div>
+  </section>
+
+  <section class="step-card">
+    <div class="step-head">
+      <span class="step-num">3</span>
+      <div>
+        <h2 class="step-title">What kind of adventure will they have?</h2>
+        <p class="step-hint">Pick what happens next in the story</p>
+      </div>
+    </div>
+    <div class="grid" id="grid-adventure" role="group" aria-label="Choose an adventure"></div>
+  </section>
+
+  <section class="cta-card">
+    <div class="step-head" style="justify-content:center; margin-bottom:16px;">
+      <span class="step-num">4</span>
+      <div style="text-align:left;">
+        <h2 class="step-title">Ready to begin?</h2>
+        <p class="step-hint">Tap below and we'll write your story</p>
+      </div>
+    </div>
+    <p class="recipe" id="recipe" aria-live="polite">Pick two animals, a dinosaur pal, a place, and an adventure above to begin!</p>
+    <div class="create-row">
+      <button type="button" id="createBtn" disabled>&#10024; Tell Our Story</button>
+    </div>
+    <p class="status-note" id="statusNote"></p>
+  </section>
+
+  <div id="result" hidden></div>
+
+  <footer class="credit">Made with a little bit of story magic, for bedtime.</footer>
+</div>
+
+</div>
+
+<script>
+(function(){
+  "use strict";
+
+  var ANIMALS = [
+    { id: "fox", label: "Fox", emoji: "\u{1F98A}" },
+    { id: "turtle", label: "Turtle", emoji: "\u{1F422}" },
+    { id: "owl", label: "Owl", emoji: "\u{1F989}" },
+    { id: "rabbit", label: "Rabbit", emoji: "\u{1F430}" },
+    { id: "elephant", label: "Elephant", emoji: "\u{1F418}" },
+    { id: "penguin", label: "Penguin", emoji: "\u{1F427}" },
+    { id: "dragon", label: "Dragon", emoji: "\u{1F409}" },
+    { id: "panda", label: "Panda", emoji: "\u{1F43C}" },
+    { id: "lion", label: "Lion", emoji: "\u{1F981}" },
+    { id: "dolphin", label: "Dolphin", emoji: "\u{1F42C}" },
+    { id: "hedgehog", label: "Hedgehog", emoji: "\u{1F994}" },
+    { id: "squirrel", label: "Squirrel", emoji: "\u{1F43F}️" }
+  ];
+
+  var DINOSAURS = [
+    { id: "trex", label: "T-Rex", emoji: "\u{1F996}" },
+    { id: "triceratops", label: "Triceratops", emoji: "\u{1F996}" },
+    { id: "stegosaurus", label: "Stegosaurus", emoji: "\u{1F995}" },
+    { id: "brontosaurus", label: "Brontosaurus", emoji: "\u{1F995}" },
+    { id: "raptor", label: "Velociraptor", emoji: "\u{1F996}" },
+    { id: "pterodactyl", label: "Pterodactyl", emoji: "\u{1F995}" }
+  ];
+
+  var SETTINGS = [
+    { id: "forest", label: "Enchanted Forest", emoji: "\u{1F332}" },
+    { id: "sea", label: "Under the Sea", emoji: "\u{1F30A}" },
+    { id: "mountain", label: "Mountain Peak", emoji: "⛰️" },
+    { id: "space", label: "Outer Space", emoji: "\u{1F680}" },
+    { id: "candy", label: "Candy Kingdom", emoji: "\u{1F36D}" },
+    { id: "desert", label: "Desert Oasis", emoji: "\u{1F3DC}️" },
+    { id: "cloud", label: "Cloud Castle", emoji: "☁️" },
+    { id: "garden", label: "Secret Garden", emoji: "\u{1F337}" }
+  ];
+
+  var ADVENTURES = [
+    { id: "treasure", label: "Treasure Hunt", emoji: "\u{1F5FA}️" },
+    { id: "rescue", label: "Rescue Mission", emoji: "\u{1F9B8}" },
+    { id: "magic", label: "Magical Journey", emoji: "✨" },
+    { id: "friendship", label: "Friendship Quest", emoji: "\u{1F91D}" },
+    { id: "mystery", label: "Mystery to Solve", emoji: "\u{1F50D}" },
+    { id: "race", label: "Big Race", emoji: "\u{1F3C1}" },
+    { id: "newhome", label: "Building a New Home", emoji: "\u{1F3E1}" },
+    { id: "party", label: "Starlight Party", emoji: "\u{1F389}" }
+  ];
+
+  var LOADING_MESSAGES = [
+    "The story fairy is waking up…",
+    "Sprinkling a little stardust…",
+    "Choosing just the right words…",
+    "Tucking the characters in…",
+    "Almost ready…"
+  ];
+
+  var selections = { animal1: null, animal2: null, dino: null, setting: null, adventure: null, name1: "", name2: "", name3: "" };
+  var permanentlyUnavailable = false;
+  var loadingTimer = null;
+
+  var els = {
+    gridAnimal1: document.getElementById("grid-animal1"),
+    gridAnimal2: document.getElementById("grid-animal2"),
+    gridDino: document.getElementById("grid-dino"),
+    gridSetting: document.getElementById("grid-setting"),
+    gridAdventure: document.getElementById("grid-adventure"),
+    nameAnimal1: document.getElementById("name-animal1"),
+    nameAnimal2: document.getElementById("name-animal2"),
+    nameDino: document.getElementById("name-dino"),
+    recipe: document.getElementById("recipe"),
+    createBtn: document.getElementById("createBtn"),
+    statusNote: document.getElementById("statusNote"),
+    result: document.getElementById("result")
+  };
+
+  var progressSteps = Array.prototype.slice.call(document.querySelectorAll(".progress-step"));
+
+  function byId(list, id){
+    for (var i = 0; i < list.length; i++){ if (list[i].id === id) return list[i]; }
+    return null;
+  }
+
+  function buildGrid(container, items, key){
+    container.innerHTML = "";
+    items.forEach(function(item){
+      var btn = document.createElement("button");
+      btn.type = "button";
+      btn.className = "pick-btn";
+      btn.setAttribute("aria-pressed", "false");
+      btn.dataset.id = item.id;
+
+      var emoji = document.createElement("span");
+      emoji.className = "emoji";
+      emoji.setAttribute("aria-hidden", "true");
+      emoji.textContent = item.emoji;
+
+      var label = document.createElement("span");
+      label.textContent = item.label;
+
+      btn.appendChild(emoji);
+      btn.appendChild(label);
+      btn.addEventListener("click", function(){ onPick(key, item, container, btn); });
+      container.appendChild(btn);
+    });
+  }
+
+  function onPick(key, item, container, btn){
+    if (key === "animal1" && selections.animal2 === item.id){
+      shakeBtn(btn); return;
+    }
+    if (key === "animal2" && selections.animal1 === item.id){
+      shakeBtn(btn); return;
+    }
+    selections[key] = item.id;
+    Array.prototype.forEach.call(container.querySelectorAll(".pick-btn"), function(b){
+      b.setAttribute("aria-pressed", b === btn ? "true" : "false");
+    });
+    updateRecipe();
+  }
+
+  function shakeBtn(btn){
+    btn.classList.remove("shake");
+    // force reflow so the animation can restart
+    void btn.offsetWidth;
+    btn.classList.add("shake");
+  }
+
+  function updateProgress(){
+    var step1Done = !!(selections.animal1 && selections.animal2 && selections.dino);
+    var step2Done = !!selections.setting;
+    var step3Done = !!selections.adventure;
+    var allDone = step1Done && step2Done && step3Done;
+    var doneFlags = [step1Done, step2Done, step3Done, false];
+    progressSteps.forEach(function(el){
+      var n = parseInt(el.dataset.step, 10);
+      el.classList.toggle("done", !!doneFlags[n - 1]);
+      el.classList.toggle("active", n === 4 && allDone);
+    });
+  }
+
+  function charLabel(item, name){
+    var trimmed = sanitizeName(name);
+    if (!trimmed) return item.label;
+    return escapeHtml(trimmed) + " the " + item.label;
+  }
+
+  function updateRecipe(){
+    var a1 = byId(ANIMALS, selections.animal1);
+    var a2 = byId(ANIMALS, selections.animal2);
+    var d = byId(DINOSAURS, selections.dino);
+    var s = byId(SETTINGS, selections.setting);
+    var adv = byId(ADVENTURES, selections.adventure);
+
+    if (!a1 && !a2 && !d && !s && !adv){
+      els.recipe.innerHTML = "Pick two animals, a dinosaur pal, a place, and an adventure above to begin!";
+    } else {
+      var a1txt = a1 ? "<strong>" + a1.emoji + " " + charLabel(a1, selections.name1) + "</strong>" : "a friend";
+      var a2txt = a2 ? "<strong>" + a2.emoji + " " + charLabel(a2, selections.name2) + "</strong>" : "another friend";
+      var dtxt = d ? "<strong>" + d.emoji + " " + charLabel(d, selections.name3) + "</strong>" : "a dinosaur pal";
+      var stxt = s ? "<strong>" + s.emoji + " " + s.label + "</strong>" : "somewhere magical";
+      var advtxt = adv ? "<strong>" + adv.emoji + " " + adv.label + "</strong>" : "an adventure";
+      els.recipe.innerHTML = "A story about " + a1txt + ", " + a2txt + ", and " + dtxt + ", off on " + (adv && /^[aeiou]/i.test(adv.label) ? "an " : "a ") + advtxt + " in " + stxt + ".";
+    }
+
+    var complete = !!(selections.animal1 && selections.animal2 && selections.dino && selections.setting && selections.adventure);
+    els.createBtn.disabled = !complete || permanentlyUnavailable;
+    if (!permanentlyUnavailable){
+      els.statusNote.textContent = complete ? "" : "Finish the choices above to unlock your story ✨";
+    }
+    updateProgress();
+  }
+
+  function sanitizeName(name){
+    if (!name) return "";
+    return String(name).replace(/[\r\n\t]+/g, " ").replace(/\s+/g, " ").trim().slice(0, 24);
+  }
+
+  function describeForPrompt(item, name){
+    var species = item.label.toLowerCase();
+    var trimmed = sanitizeName(name);
+    if (trimmed) return trimmed + " the " + species;
+    return "a " + species;
+  }
+
+  function buildPrompt(){
+    var a1 = byId(ANIMALS, selections.animal1);
+    var a2 = byId(ANIMALS, selections.animal2);
+    var d = byId(DINOSAURS, selections.dino);
+    var s = byId(SETTINGS, selections.setting).label.toLowerCase();
+    var adv = byId(ADVENTURES, selections.adventure).label.toLowerCase();
+
+    var c1 = describeForPrompt(a1, selections.name1);
+    var c2 = describeForPrompt(a2, selections.name2);
+    var c3 = describeForPrompt(d, selections.name3);
+
+    return "You are writing a bedtime story for a young child, age 4 to 8, to be read aloud at bedtime by a parent.\n\n" +
+      "Write a warm, gentle, cozy bedtime story starring three friends: " + c1 + ", " + c2 + ", and " + c3 + ". " +
+      "The third friend is a dinosaur, but a gentle and friendly one — never scary or fierce, just a big, warm, playful pal. " +
+      "The story takes place in a setting inspired by \"" + s + "\" and follows a \"" + adv + "\".\n\n" +
+      "Requirements:\n" +
+      "- Length: about 700 to 800 words — enough to read aloud in roughly 5 minutes.\n" +
+      "- Tone: soothing, warm, and reassuring, appropriate for right before sleep. No real danger, violence, or frightening moments; if there is a small worry or obstacle, resolve it gently and quickly.\n" +
+      "- Vocabulary: simple and clear for a young child, with a few gentle, sensory, imaginative details.\n" +
+      "- Names: whenever a friend's description above already includes a name, use that exact name consistently throughout the story and never rename or alter it. For a friend described only by species (no name given), invent one simple, friendly name for them and use it consistently. All three friends should be kind to each other and help each other.\n" +
+      "- Structure: a cozy beginning, one small gentle adventure in the middle, and a soft, sleepy, happy ending — the characters should end the story feeling safe, cozy, and ready to fall asleep.\n" +
+      "- Write in paragraphs, each a few sentences long.\n\n" +
+      "Reply with ONLY a JSON object of this exact shape, and nothing else outside the JSON:\n" +
+      "{\"title\": string, \"story\": string}\n" +
+      "where \"story\" contains the full story text with paragraphs separated by a blank line (\\n\\n).";
+  }
+
+  var ERROR_COPY = {
+    server_not_configured: { permanent: true,  text: "This story maker hasn't finished being set up yet (the server is missing its API key)." },
+    rate_limited:           { permanent: false, text: "\u{1F634} The story fairy is very busy right now. Let's wait a little and try again." },
+    refused:                { permanent: false, text: "\u{1F914} The story fairy couldn't write that one. Try different choices!" },
+    empty_completion:       { permanent: false, text: "\u{1F4D6} The story fairy went quiet. Let's try again." },
+    invalid_json:           { permanent: false, text: "\u{1F4D6} The story got a little jumbled. Let's try again." },
+    upstream_error:         { permanent: false, text: "⛅ A little cloud got in the way. Let's try again." },
+    invalid_request:        { permanent: false, text: "\u{1F914} Something went wrong setting up the story. Let's try again." },
+    prompt_too_large:       { permanent: false, text: "\u{1F4DA} That was a lot to ask for at once. Let's try again." },
+    network_error:          { permanent: false, text: "\u{1F32B}️ Couldn't reach the story fairy. Check your connection and try again." }
+  };
+  var DEFAULT_ERROR = { permanent: false, text: "⛅ Something went wrong. Let's try again." };
+
+  function setLoading(isLoading){
+    if (isLoading){
+      els.createBtn.disabled = true;
+      els.result.hidden = false;
+      els.result.innerHTML =
+        '<div class="loading">' +
+          '<div class="loading-moon" aria-hidden="true">\u{1F319}</div>' +
+          '<p class="loading-text" id="loadingText">' + LOADING_MESSAGES[0] + '</p>' +
+        '</div>';
+      els.result.scrollIntoView({ behavior: "smooth", block: "start" });
+      var i = 0;
+      loadingTimer = setInterval(function(){
+        i = (i + 1) % LOADING_MESSAGES.length;
+        var t = document.getElementById("loadingText");
+        if (t) t.textContent = LOADING_MESSAGES[i];
+      }, 2600);
+    } else {
+      if (loadingTimer){ clearInterval(loadingTimer); loadingTimer = null; }
+    }
+  }
+
+  function displayName(item, name){
+    if (!item) return "";
+    return sanitizeName(name) || item.label;
+  }
+
+  function showStory(data){
+    var title = (data && typeof data.title === "string" && data.title.trim()) || "A Bedtime Story";
+    var story = (data && typeof data.story === "string" && data.story.trim()) || "";
+    var a1 = byId(ANIMALS, selections.animal1);
+    var a2 = byId(ANIMALS, selections.animal2);
+    var d = byId(DINOSAURS, selections.dino);
+    var n1 = displayName(a1, selections.name1);
+    var n2 = displayName(a2, selections.name2);
+    var n3 = displayName(d, selections.name3);
+
+    var paragraphs = story.split(/\n\s*\n/).filter(function(p){ return p.trim().length > 0; });
+    var html = '<div class="story-card">' +
+      '<p class="story-meta">\u{1F319} A 5-minute bedtime story for ' + escapeHtml(n1) + ', ' + escapeHtml(n2) + ' &amp; ' + escapeHtml(n3) + ' fans</p>' +
+      '<h3 class="story-title">' + escapeHtml(title) + '</h3>' +
+      '<p class="story-divider" aria-hidden="true">✦ ✦ ✦</p>' +
+      '<div class="story-text">' + paragraphs.map(function(p){ return "<p>" + escapeHtml(p.trim()) + "</p>"; }).join("") + '</div>' +
+      '</div>' +
+      '<div class="again-row"><button type="button" id="againBtn">\u{1F4D6} Tell Another Story</button></div>';
+
+    els.result.innerHTML = html;
+    document.getElementById("againBtn").addEventListener("click", resetAll);
+  }
+
+  function escapeHtml(str){
+    return String(str)
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;");
+  }
+
+  function showNotice(message, isError){
+    els.result.hidden = false;
+    els.result.innerHTML = '<div class="notice' + (isError ? " error" : "") + '">' + escapeHtml(message) + '</div>';
+    els.result.scrollIntoView({ behavior: "smooth", block: "start" });
+  }
+
+  function handleError(e){
+    var code = e && e.code;
+    var copy = (code && ERROR_COPY[code]) || DEFAULT_ERROR;
+    if (copy.permanent){
+      permanentlyUnavailable = true;
+      els.createBtn.disabled = true;
+      els.statusNote.textContent = "";
+      showNotice(copy.text, false);
+    } else {
+      els.createBtn.disabled = !(selections.animal1 && selections.animal2 && selections.dino && selections.setting && selections.adventure);
+      showNotice(copy.text + " (Tap Create Story to try again.)", true);
+    }
+  }
+
+  function resetAll(){
+    selections = { animal1: null, animal2: null, dino: null, setting: null, adventure: null, name1: "", name2: "", name3: "" };
+    [els.gridAnimal1, els.gridAnimal2, els.gridDino, els.gridSetting, els.gridAdventure].forEach(function(g){
+      Array.prototype.forEach.call(g.querySelectorAll(".pick-btn"), function(b){
+        b.setAttribute("aria-pressed", "false");
+      });
+    });
+    els.nameAnimal1.value = "";
+    els.nameAnimal2.value = "";
+    els.nameDino.value = "";
+    updateRecipe();
+    els.result.hidden = true;
+    els.result.innerHTML = "";
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }
+
+  async function createStory(){
+    var complete = !!(selections.animal1 && selections.animal2 && selections.dino && selections.setting && selections.adventure);
+    if (!complete || permanentlyUnavailable) return;
+
+    setLoading(true);
+
+    var res;
+    try {
+      res = await fetch("/api/generate-story", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ prompt: buildPrompt() })
+      });
+    } catch (networkErr) {
+      setLoading(false);
+      handleError({ code: "network_error" });
+      return;
+    }
+
+    var data = null;
+    try { data = await res.json(); } catch (parseErr) { data = null; }
+
+    if (!res.ok){
+      setLoading(false);
+      handleError({ code: (data && data.error) || "upstream_error" });
+      return;
+    }
+    if (!data || typeof data.title !== "string" || typeof data.story !== "string"){
+      setLoading(false);
+      handleError({ code: "invalid_json" });
+      return;
+    }
+
+    setLoading(false);
+    els.createBtn.disabled = false;
+    showStory(data);
+  }
+
+  buildGrid(els.gridAnimal1, ANIMALS, "animal1");
+  buildGrid(els.gridAnimal2, ANIMALS, "animal2");
+  buildGrid(els.gridDino, DINOSAURS, "dino");
+  buildGrid(els.gridSetting, SETTINGS, "setting");
+  buildGrid(els.gridAdventure, ADVENTURES, "adventure");
+  els.createBtn.addEventListener("click", createStory);
+  els.nameAnimal1.addEventListener("input", function(){ selections.name1 = els.nameAnimal1.value; updateRecipe(); });
+  els.nameAnimal2.addEventListener("input", function(){ selections.name2 = els.nameAnimal2.value; updateRecipe(); });
+  els.nameDino.addEventListener("input", function(){ selections.name3 = els.nameDino.value; updateRecipe(); });
+  updateProgress();
+})();
+</script>
+</body>
+</html>
