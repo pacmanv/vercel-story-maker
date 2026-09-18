@@ -107,6 +107,31 @@
     margin: 0 0 12px;
   }
 
+  .flask-lockup{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap: 9px;
+    margin-bottom: 12px;
+  }
+  .flask-lockup .eyebrow{ margin:0; }
+  .flask-lockup .flask-wrap{
+    position:relative;
+    display:inline-flex;
+    width: 26px;
+    height: 26px;
+  }
+  .flask-icon{
+    filter: drop-shadow(0 0 6px rgba(243,200,118,0.45));
+  }
+  .flask-lockup .mini-sparkle{
+    position:absolute;
+    color: var(--gold-light);
+    opacity: .9;
+  }
+  .flask-lockup .ms1{ top:-6px; right:-7px; font-size:9px; }
+  .flask-lockup .ms2{ top:-1px; right:-13px; font-size:6px; }
+
   h1{
     color: var(--cream);
     font-size: clamp(30px, 6.4vw, 46px);
@@ -692,6 +717,13 @@
     margin-top: 40px;
     letter-spacing:0.04em;
   }
+  footer.credit .credit-sub{
+    display:block;
+    margin-top: 6px;
+    font-size: 10.5px;
+    opacity: .7;
+    letter-spacing:0.03em;
+  }
 
   @media (max-width: 480px){
     .hero-inner{ padding: 36px 20px 52px; }
@@ -716,10 +748,22 @@
   <span class="sparkle s2" aria-hidden="true">&#10022;</span>
   <span class="sparkle s3" aria-hidden="true">&#10022;</span>
   <div class="hero-inner">
+    <div class="flask-lockup">
+      <span class="flask-wrap">
+        <svg class="flask-icon" width="26" height="26" viewBox="0 0 44 44" fill="none" aria-hidden="true">
+          <path d="M18 5h8v9.2l8.4 15.6c1.9 3.6-.7 8-4.8 8H14.4c-4.1 0-6.7-4.4-4.8-8L18 14.2V5z"
+                fill="none" stroke="#f3c876" stroke-width="2.6" stroke-linejoin="round"/>
+          <path d="M15.3 21.5h13.4" stroke="#f3c876" stroke-width="2.2" stroke-linecap="round"/>
+          <path d="M16 5h12" stroke="#f3c876" stroke-width="2.6" stroke-linecap="round"/>
+        </svg>
+        <span class="mini-sparkle ms1" aria-hidden="true">&#10022;</span>
+        <span class="mini-sparkle ms2" aria-hidden="true">&#10022;</span>
+      </span>
+      <p class="eyebrow">Dad's Story Lab</p>
+    </div>
     <svg class="moon" width="46" height="46" viewBox="0 0 44 44" fill="none" aria-hidden="true">
       <path d="M27 6C19.8 8.6 15 15.5 15 23.4c0 10.6 8.6 19.2 19.2 19.2 3 0 5.9-.7 8.4-1.9C37.8 44 30.6 47 22.7 46.3 12.1 45.3 4 36 4 25 4 13.9 12.6 4.4 23.6 4.1c1.2 0 2.3.6 3.4 1.9z" fill="#ffbf5c" transform="translate(-1 -3) scale(0.94)"/>
     </svg>
-    <p class="eyebrow">Dad's Story Lab</p>
     <h1>Bedtime Story Maker</h1>
     <p class="sub">Choose your characters, your world, and your adventure &mdash; we'll write a cozy story just for you, ready to read aloud tonight.</p>
   </div>
@@ -838,7 +882,7 @@
 
   <div id="result" hidden></div>
 
-  <footer class="credit">Made with a little bit of story magic, for bedtime.</footer>
+  <footer class="credit">Made with a little bit of story magic, for bedtime.<span class="credit-sub">Designed, created, and built by Pac K.</span></footer>
 </div>
 
 </div>
