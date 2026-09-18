@@ -2,8 +2,5 @@
   "name": "bedtime-story-maker",
   "version": "1.0.0",
   "private": true,
-  "description": "Self-hosted Bedtime Story Maker (static page + a Vercel serverless function that calls the Anthropic API).",
-  "dependencies": {
-    "@vercel/firewall": "latest"
-  }
+  "description": "Self-hosted Bedtime Story Maker (static page + a Vercel serverless function that calls the Anthropic API)."
 }
