@@ -26,9 +26,17 @@ module.exports = async function handler(req, res) {
   }
 
   const prompt = req.body && req.body.prompt;
-  if (!prompt || typeof prompt !== "string" || prompt.length > 4000) {
+  if (!prompt || typeof prompt !== "string" || prompt.length > 6000) {
     return res.status(400).json({ error: "invalid_request" });
   }
+
+  // The client sends a target token budget based on the story length the
+  // user picked (Quick / Classic / Long). Clamp it to a sane range so a
+  // malformed or malicious value can't blow up cost or exceed model limits.
+  const requestedMaxTokens = Number(req.body && req.body.maxTokens);
+  const maxTokens = Number.isFinite(requestedMaxTokens)
+    ? Math.min(Math.max(Math.round(requestedMaxTokens), 500), 6000)
+    : 3000;
 
   const ip = String((req.headers["x-forwarded-for"] || req.socket.remoteAddress || "unknown"))
     .split(",")[0]
@@ -51,7 +59,7 @@ module.exports = async function handler(req, res) {
       },
       body: JSON.stringify({
         model: "claude-sonnet-5",
-        max_tokens: 3000,
+        max_tokens: maxTokens,
         messages: [{ role: "user", content: prompt }]
       })
     });
