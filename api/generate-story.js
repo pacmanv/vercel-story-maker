@@ -4,47 +4,26 @@
 // Set ANTHROPIC_API_KEY in your Vercel project's Environment Variables
 // (Project Settings -> Environment Variables) before deploying.
 
-// Rate limiting is enforced by Vercel's built-in Firewall (WAF) rather than
-// an in-process counter, so it's shared across every serverless instance
-// and actually holds up under real concurrent traffic (the old in-memory
-// Map reset per-instance and didn't share state — fine for one person
-// mashing the button, not for a public launch). The rule itself (20
-// requests / 60s per IP) is configured in the Vercel dashboard under
-// Project -> Firewall -> Rules -> "generate-story-rate-limit", and this
-// code just asks that rule whether the current request should be blocked.
+// Rate limiting is enforced entirely by Vercel's built-in Firewall (WAF),
+// not by any code in this file. There's a custom rule configured in the
+// dashboard under Project -> Firewall -> Rules -> "generate-story-rate-limit"
+// (condition: path equals /api/generate-story, action: Rate Limit, 20
+// requests / 60s per IP, fixed window). Because it runs at Vercel's edge
+// network, a client that exceeds the limit gets a 429 before the request
+// ever reaches this function — it's shared across every serverless
+// instance automatically and doesn't cost any compute time to enforce,
+// unlike the old approach below.
 //
-// checkRateLimit() expects a standard Web `Request` object, but this
-// function uses the classic Node (req, res) handler shape, so we build a
-// minimal Request from the incoming req below. If the rate-limit check
-// itself fails for any reason (transient network hiccup talking to the
-// Firewall service, etc.), we log it and let the request through rather
-// than taking the whole story generator down over a rate-limit hiccup.
-const RATE_LIMIT_RULE_ID = "rule_generate_story_rate_limit_X6dk5A";
-
-function buildWebRequest(req) {
-  const proto = req.headers["x-forwarded-proto"] || "https";
-  const host = req.headers["x-forwarded-host"] || req.headers.host || "localhost";
-  const headers = new Headers();
-  for (const [key, value] of Object.entries(req.headers || {})) {
-    if (value == null) continue;
-    headers.set(key, Array.isArray(value) ? value.join(", ") : String(value));
-  }
-  return new Request(`${proto}://${host}${req.url || "/"}`, {
-    method: req.method || "GET",
-    headers
-  });
-}
-
-async function isRateLimited(req) {
-  try {
-    const { checkRateLimit } = await import("@vercel/firewall");
-    const result = await checkRateLimit(RATE_LIMIT_RULE_ID, { request: buildWebRequest(req) });
-    return !!(result && result.rateLimited);
-  } catch (e) {
-    console.error("Rate limit check failed, allowing request through", e && e.message);
-    return false;
-  }
-}
+// (We previously tried wiring this up through the @vercel/firewall
+// `checkRateLimit()` SDK from inside this function, but that's a
+// different mechanism meant for app-level keys — e.g. rate-limiting by
+// authenticated user ID — that requires a rule matched on a
+// `rate_limit_api_id` condition, not a plain path condition. Since we
+// don't need per-user keys here, the plain dashboard rule above is the
+// simpler, complete fix and needs no code at all. The original version of
+// this file used an in-memory Map instead, which reset per-instance and
+// didn't share state across concurrent instances — fine for blunting one
+// person mashing the button, not a real defense for public traffic.)
 
 module.exports = async function handler(req, res) {
   if (req.method !== "POST") {
@@ -69,10 +48,6 @@ module.exports = async function handler(req, res) {
   const maxTokens = Number.isFinite(requestedMaxTokens)
     ? Math.min(Math.max(Math.round(requestedMaxTokens), 500), 6000)
     : 3000;
-
-  if (await isRateLimited(req)) {
-    return res.status(429).json({ error: "rate_limited" });
-  }
 
   try {
     const upstream = await fetch("https://api.anthropic.com/v1/messages", {
