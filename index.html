@@ -699,3 +699,690 @@
     #createBtn{ font-size: 18px; padding: 17px 24px; }
     .story-card{ padding-left: 20px; padding-right: 20px; border-radius: 22px; }
     .story-text{ font-size: 17.5px; }
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    .loading-moon, .sparkle, #createBtn, .story-card{ animation:none; }
+    .pick-btn, #createBtn, #againBtn, .progress-step{ transition:none; }
+  }
+</style>
+</head>
+<body>
+
+<div id="app">
+
+<div class="hero-sky">
+  <span class="sparkle s1" aria-hidden="true">&#10022;</span>
+  <span class="sparkle s2" aria-hidden="true">&#10022;</span>
+  <span class="sparkle s3" aria-hidden="true">&#10022;</span>
+  <div class="hero-inner">
+    <svg class="moon" width="46" height="46" viewBox="0 0 44 44" fill="none" aria-hidden="true">
+      <path d="M27 6C19.8 8.6 15 15.5 15 23.4c0 10.6 8.6 19.2 19.2 19.2 3 0 5.9-.7 8.4-1.9C37.8 44 30.6 47 22.7 46.3 12.1 45.3 4 36 4 25 4 13.9 12.6 4.4 23.6 4.1c1.2 0 2.3.6 3.4 1.9z" fill="#ffbf5c" transform="translate(-1 -3) scale(0.94)"/>
+    </svg>
+    <p class="eyebrow">Dad's Story Lab</p>
+    <h1>Bedtime Story Maker</h1>
+    <p class="sub">Choose your characters, your world, and your adventure &mdash; we'll write a cozy story just for you, ready to read aloud tonight.</p>
+  </div>
+</div>
+
+<div class="page">
+
+  <nav class="progress-trail" aria-hidden="true">
+    <div class="progress-step" data-step="1"><span class="ico">&#128062;</span><span class="label">Who</span></div>
+    <div class="progress-line"></div>
+    <div class="progress-step" data-step="2"><span class="ico">&#128506;&#65039;</span><span class="label">Where</span></div>
+    <div class="progress-line"></div>
+    <div class="progress-step" data-step="3"><span class="ico">&#127775;</span><span class="label">Adventure</span></div>
+    <div class="progress-line"></div>
+    <div class="progress-step" data-step="4"><span class="ico">&#128214;</span><span class="label">Story</span></div>
+  </nav>
+
+  <section class="step-card">
+    <div class="step-head">
+      <span class="step-num">1</span>
+      <div>
+        <h2 class="step-title">Who's going on the adventure?</h2>
+        <p class="step-hint">Pick two animal friends and a dinosaur pal to star in tonight's story</p>
+      </div>
+    </div>
+    <div class="mini-group">
+      <p class="mini-label">Your hero</p>
+      <div class="grid" id="grid-animal1" role="group" aria-label="Choose your first animal friend"></div>
+      <div class="name-field">
+        <label class="name-label" for="name-animal1">Give them a name? <span class="optional">(optional)</span></label>
+        <input type="text" id="name-animal1" class="name-input" maxlength="24" placeholder="e.g. Ruby" autocomplete="off">
+        <div class="pronoun-field">
+          <label class="name-label" for="pronoun-animal1">Pronouns <span class="optional">(optional)</span></label>
+          <select id="pronoun-animal1" class="pronoun-select">
+            <option value="he">He / Him</option>
+            <option value="she">She / Her</option>
+            <option value="they" selected>They / Them</option>
+          </select>
+        </div>
+      </div>
+    </div>
+    <div class="mini-group">
+      <p class="mini-label">Their best friend</p>
+      <div class="grid" id="grid-animal2" role="group" aria-label="Choose your second animal friend"></div>
+      <div class="name-field">
+        <label class="name-label" for="name-animal2">Give them a name? <span class="optional">(optional)</span></label>
+        <input type="text" id="name-animal2" class="name-input" maxlength="24" placeholder="e.g. Pip" autocomplete="off">
+        <div class="pronoun-field">
+          <label class="name-label" for="pronoun-animal2">Pronouns <span class="optional">(optional)</span></label>
+          <select id="pronoun-animal2" class="pronoun-select">
+            <option value="he">He / Him</option>
+            <option value="she">She / Her</option>
+            <option value="they" selected>They / Them</option>
+          </select>
+        </div>
+      </div>
+    </div>
+    <div class="mini-group">
+      <p class="mini-label">Their dinosaur friend</p>
+      <div class="grid" id="grid-dino" role="group" aria-label="Choose a dinosaur friend"></div>
+      <div class="name-field">
+        <label class="name-label" for="name-dino">Give them a name? <span class="optional">(optional)</span></label>
+        <input type="text" id="name-dino" class="name-input" maxlength="24" placeholder="e.g. Rex" autocomplete="off">
+        <div class="pronoun-field">
+          <label class="name-label" for="pronoun-dino">Pronouns <span class="optional">(optional)</span></label>
+          <select id="pronoun-dino" class="pronoun-select">
+            <option value="he">He / Him</option>
+            <option value="she">She / Her</option>
+            <option value="they" selected>They / Them</option>
+          </select>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="step-card">
+    <div class="step-head">
+      <span class="step-num">2</span>
+      <div>
+        <h2 class="step-title">Where does the adventure happen?</h2>
+        <p class="step-hint">Pick a magical place to explore</p>
+      </div>
+    </div>
+    <div class="grid" id="grid-setting" role="group" aria-label="Choose a setting"></div>
+  </section>
+
+  <section class="step-card">
+    <div class="step-head">
+      <span class="step-num">3</span>
+      <div>
+        <h2 class="step-title">What kind of adventure will they have?</h2>
+        <p class="step-hint">Pick what happens next in the story</p>
+      </div>
+    </div>
+    <div class="grid" id="grid-adventure" role="group" aria-label="Choose an adventure"></div>
+    <div class="mini-group" style="margin-top:22px;">
+      <p class="mini-label">How long should it be?</p>
+      <div class="grid" id="grid-length" role="group" aria-label="Choose story length"></div>
+    </div>
+  </section>
+
+  <section class="cta-card">
+    <div class="step-head" style="justify-content:center; margin-bottom:16px;">
+      <span class="step-num">4</span>
+      <div style="text-align:left;">
+        <h2 class="step-title">Ready to begin?</h2>
+        <p class="step-hint">Tap below and we'll write your story</p>
+      </div>
+    </div>
+    <p class="recipe" id="recipe" aria-live="polite">Pick two animals, a dinosaur pal, a place, and an adventure above to begin!</p>
+    <div class="create-row">
+      <button type="button" id="createBtn" disabled>&#10024; Tell Our Story</button>
+    </div>
+    <p class="status-note" id="statusNote"></p>
+  </section>
+
+  <div id="result" hidden></div>
+
+  <footer class="credit">Made with a little bit of story magic, for bedtime.</footer>
+</div>
+
+</div>
+
+<script>
+(function(){
+  "use strict";
+
+  var ANIMALS = [
+    { id: "fox", label: "Fox", emoji: "\u{1F98A}" },
+    { id: "turtle", label: "Turtle", emoji: "\u{1F422}" },
+    { id: "owl", label: "Owl", emoji: "\u{1F989}" },
+    { id: "rabbit", label: "Rabbit", emoji: "\u{1F430}" },
+    { id: "elephant", label: "Elephant", emoji: "\u{1F418}" },
+    { id: "penguin", label: "Penguin", emoji: "\u{1F427}" },
+    { id: "dragon", label: "Dragon", emoji: "\u{1F409}" },
+    { id: "panda", label: "Panda", emoji: "\u{1F43C}" },
+    { id: "lion", label: "Lion", emoji: "\u{1F981}" },
+    { id: "dolphin", label: "Dolphin", emoji: "\u{1F42C}" },
+    { id: "hedgehog", label: "Hedgehog", emoji: "\u{1F994}" },
+    { id: "squirrel", label: "Squirrel", emoji: "\u{1F43F}️" }
+  ];
+
+  var DINOSAURS = [
+    { id: "trex", label: "T-Rex", emoji: "\u{1F996}" },
+    { id: "triceratops", label: "Triceratops", emoji: "\u{1F996}" },
+    { id: "stegosaurus", label: "Stegosaurus", emoji: "\u{1F995}" },
+    { id: "brontosaurus", label: "Brontosaurus", emoji: "\u{1F995}" },
+    { id: "raptor", label: "Velociraptor", emoji: "\u{1F996}" },
+    { id: "pterodactyl", label: "Pterodactyl", emoji: "\u{1F995}" }
+  ];
+
+  var SETTINGS = [
+    { id: "forest", label: "Enchanted Forest", emoji: "\u{1F332}" },
+    { id: "sea", label: "Under the Sea", emoji: "\u{1F30A}" },
+    { id: "mountain", label: "Mountain Peak", emoji: "⛰️" },
+    { id: "space", label: "Outer Space", emoji: "\u{1F680}" },
+    { id: "candy", label: "Candy Kingdom", emoji: "\u{1F36D}" },
+    { id: "desert", label: "Desert Oasis", emoji: "\u{1F3DC}️" },
+    { id: "cloud", label: "Cloud Castle", emoji: "☁️" },
+    { id: "garden", label: "Secret Garden", emoji: "\u{1F337}" }
+  ];
+
+  var ADVENTURES = [
+    { id: "treasure", label: "Treasure Hunt", emoji: "\u{1F5FA}️" },
+    { id: "rescue", label: "Rescue Mission", emoji: "\u{1F9B8}" },
+    { id: "magic", label: "Magical Journey", emoji: "✨" },
+    { id: "friendship", label: "Friendship Quest", emoji: "\u{1F91D}" },
+    { id: "mystery", label: "Mystery to Solve", emoji: "\u{1F50D}" },
+    { id: "race", label: "Big Race", emoji: "\u{1F3C1}" },
+    { id: "newhome", label: "Building a New Home", emoji: "\u{1F3E1}" },
+    { id: "party", label: "Starlight Party", emoji: "\u{1F389}" }
+  ];
+
+  var LENGTHS = [
+    { id: "quick",   label: "Quick Tale",     sub: "~2 min",  emoji: "⚡",      words: "250 to 350",   adj: "2-minute",  maxTokens: 1200 },
+    { id: "classic", label: "Classic Story",  sub: "~5 min",  emoji: "\u{1F319}",   words: "700 to 800",   adj: "5-minute",  maxTokens: 3000 },
+    { id: "long",    label: "Long Adventure", sub: "~10 min", emoji: "\u{1F4DA}",   words: "1100 to 1300", adj: "10-minute", maxTokens: 4500 }
+  ];
+
+  var PRONOUNS = {
+    he:   { label: "he/him/his" },
+    she:  { label: "she/her/hers" },
+    they: { label: "they/them/their" }
+  };
+  var DEFAULT_LENGTH = "classic";
+  var DEFAULT_PRONOUN = "they";
+
+  var LOADING_MESSAGES = [
+    "The story fairy is waking up…",
+    "Sprinkling a little stardust…",
+    "Choosing just the right words…",
+    "Tucking the characters in…",
+    "Almost ready…"
+  ];
+
+  var selections = {
+    animal1: null, animal2: null, dino: null, setting: null, adventure: null,
+    length: DEFAULT_LENGTH,
+    name1: "", name2: "", name3: "",
+    pronoun1: DEFAULT_PRONOUN, pronoun2: DEFAULT_PRONOUN, pronoun3: DEFAULT_PRONOUN
+  };
+  var permanentlyUnavailable = false;
+  var loadingTimer = null;
+  var speechState = { mode: "idle", idx: 0, paragraphEls: [] }; // mode: idle | playing | paused
+
+  var els = {
+    gridAnimal1: document.getElementById("grid-animal1"),
+    gridAnimal2: document.getElementById("grid-animal2"),
+    gridDino: document.getElementById("grid-dino"),
+    gridSetting: document.getElementById("grid-setting"),
+    gridAdventure: document.getElementById("grid-adventure"),
+    gridLength: document.getElementById("grid-length"),
+    nameAnimal1: document.getElementById("name-animal1"),
+    nameAnimal2: document.getElementById("name-animal2"),
+    nameDino: document.getElementById("name-dino"),
+    pronounAnimal1: document.getElementById("pronoun-animal1"),
+    pronounAnimal2: document.getElementById("pronoun-animal2"),
+    pronounDino: document.getElementById("pronoun-dino"),
+    recipe: document.getElementById("recipe"),
+    createBtn: document.getElementById("createBtn"),
+    statusNote: document.getElementById("statusNote"),
+    result: document.getElementById("result")
+  };
+
+  var progressSteps = Array.prototype.slice.call(document.querySelectorAll(".progress-step"));
+
+  function byId(list, id){
+    for (var i = 0; i < list.length; i++){ if (list[i].id === id) return list[i]; }
+    return null;
+  }
+
+  function buildGrid(container, items, key){
+    container.innerHTML = "";
+    items.forEach(function(item){
+      var btn = document.createElement("button");
+      btn.type = "button";
+      btn.className = "pick-btn";
+      btn.setAttribute("aria-pressed", "false");
+      btn.dataset.id = item.id;
+
+      var emoji = document.createElement("span");
+      emoji.className = "emoji";
+      emoji.setAttribute("aria-hidden", "true");
+      emoji.textContent = item.emoji;
+
+      var label = document.createElement("span");
+      label.textContent = item.label;
+
+      btn.appendChild(emoji);
+      btn.appendChild(label);
+
+      if (item.sub){
+        btn.classList.add("has-sub");
+        var sub = document.createElement("span");
+        sub.className = "pick-sub";
+        sub.textContent = item.sub;
+        btn.appendChild(sub);
+      }
+
+      btn.addEventListener("click", function(){ onPick(key, item, container, btn); });
+      container.appendChild(btn);
+    });
+  }
+
+  function onPick(key, item, container, btn){
+    if (key === "animal1" && selections.animal2 === item.id){
+      shakeBtn(btn); return;
+    }
+    if (key === "animal2" && selections.animal1 === item.id){
+      shakeBtn(btn); return;
+    }
+    selections[key] = item.id;
+    Array.prototype.forEach.call(container.querySelectorAll(".pick-btn"), function(b){
+      b.setAttribute("aria-pressed", b === btn ? "true" : "false");
+    });
+    updateRecipe();
+  }
+
+  function shakeBtn(btn){
+    btn.classList.remove("shake");
+    // force reflow so the animation can restart
+    void btn.offsetWidth;
+    btn.classList.add("shake");
+  }
+
+  function updateProgress(){
+    var step1Done = !!(selections.animal1 && selections.animal2 && selections.dino);
+    var step2Done = !!selections.setting;
+    var step3Done = !!selections.adventure;
+    var allDone = step1Done && step2Done && step3Done;
+    var doneFlags = [step1Done, step2Done, step3Done, false];
+    progressSteps.forEach(function(el){
+      var n = parseInt(el.dataset.step, 10);
+      el.classList.toggle("done", !!doneFlags[n - 1]);
+      el.classList.toggle("active", n === 4 && allDone);
+    });
+  }
+
+  function charLabel(item, name){
+    var trimmed = sanitizeName(name);
+    if (!trimmed) return item.label;
+    return escapeHtml(trimmed) + " the " + item.label;
+  }
+
+  function updateRecipe(){
+    var a1 = byId(ANIMALS, selections.animal1);
+    var a2 = byId(ANIMALS, selections.animal2);
+    var d = byId(DINOSAURS, selections.dino);
+    var s = byId(SETTINGS, selections.setting);
+    var adv = byId(ADVENTURES, selections.adventure);
+    var len = byId(LENGTHS, selections.length) || byId(LENGTHS, DEFAULT_LENGTH);
+
+    if (!a1 && !a2 && !d && !s && !adv){
+      els.recipe.innerHTML = "Pick two animals, a dinosaur pal, a place, and an adventure above to begin!";
+    } else {
+      var a1txt = a1 ? "<strong>" + a1.emoji + " " + charLabel(a1, selections.name1) + "</strong>" : "a friend";
+      var a2txt = a2 ? "<strong>" + a2.emoji + " " + charLabel(a2, selections.name2) + "</strong>" : "another friend";
+      var dtxt = d ? "<strong>" + d.emoji + " " + charLabel(d, selections.name3) + "</strong>" : "a dinosaur pal";
+      var stxt = s ? "<strong>" + s.emoji + " " + s.label + "</strong>" : "somewhere magical";
+      var advtxt = adv ? "<strong>" + adv.emoji + " " + adv.label + "</strong>" : "an adventure";
+      var lentxt = len ? " &mdash; a <strong>" + len.label.toLowerCase() + "</strong> (" + len.sub + ")" : "";
+      els.recipe.innerHTML = "A story about " + a1txt + ", " + a2txt + ", and " + dtxt + ", off on " + (adv && /^[aeiou]/i.test(adv.label) ? "an " : "a ") + advtxt + " in " + stxt + lentxt + ".";
+    }
+
+    var complete = !!(selections.animal1 && selections.animal2 && selections.dino && selections.setting && selections.adventure);
+    els.createBtn.disabled = !complete || permanentlyUnavailable;
+    if (!permanentlyUnavailable){
+      els.statusNote.textContent = complete ? "" : "Finish the choices above to unlock your story ✨";
+    }
+    updateProgress();
+  }
+
+  function sanitizeName(name){
+    if (!name) return "";
+    return String(name).replace(/[\r\n\t]+/g, " ").replace(/\s+/g, " ").trim().slice(0, 24);
+  }
+
+  function describeForPrompt(item, name, pronounKey){
+    var species = item.label.toLowerCase();
+    var trimmed = sanitizeName(name);
+    var pron = PRONOUNS[pronounKey] || PRONOUNS[DEFAULT_PRONOUN];
+    var who = trimmed ? (trimmed + " the " + species) : ("a " + species);
+    return who + " (pronouns: " + pron.label + ")";
+  }
+
+  function buildPrompt(){
+    var a1 = byId(ANIMALS, selections.animal1);
+    var a2 = byId(ANIMALS, selections.animal2);
+    var d = byId(DINOSAURS, selections.dino);
+    var s = byId(SETTINGS, selections.setting).label.toLowerCase();
+    var adv = byId(ADVENTURES, selections.adventure).label.toLowerCase();
+    var len = byId(LENGTHS, selections.length) || byId(LENGTHS, DEFAULT_LENGTH);
+
+    var c1 = describeForPrompt(a1, selections.name1, selections.pronoun1);
+    var c2 = describeForPrompt(a2, selections.name2, selections.pronoun2);
+    var c3 = describeForPrompt(d, selections.name3, selections.pronoun3);
+
+    return "You are writing a bedtime story for a young child, age 4 to 8, to be read aloud at bedtime by a parent.\n\n" +
+      "Write a warm, gentle, cozy bedtime story starring three friends: " + c1 + ", " + c2 + ", and " + c3 + ". " +
+      "The third friend is a dinosaur, but a gentle and friendly one — never scary or fierce, just a big, warm, playful pal. " +
+      "The story takes place in a setting inspired by \"" + s + "\" and follows a \"" + adv + "\".\n\n" +
+      "Requirements:\n" +
+      "- Length: about " + len.words + " words — enough to read aloud in roughly " + len.adj.replace("-", " ") + ".\n" +
+      "- Tone: soothing, warm, and reassuring, appropriate for right before sleep. No real danger, violence, or frightening moments; if there is a small worry or obstacle, resolve it gently and quickly.\n" +
+      "- Vocabulary: simple and clear for a young child, with a few gentle, sensory, imaginative details.\n" +
+      "- Names: whenever a friend's description above already includes a name, use that exact name consistently throughout the story and never rename or alter it. For a friend described only by species (no name given), invent one simple, friendly name for them and use it consistently. All three friends should be kind to each other and help each other.\n" +
+      "- Pronouns: each friend's description above ends with their pronouns in parentheses. Use exactly those pronouns for that character every time, in the correct subject/object/possessive forms (he/him/his, she/her/hers, or they/them/their). Never switch a character's pronouns partway through the story, and never guess a different pronoun from their name. If a character uses they/them, use standard singular-they grammar (e.g. \"they were curious\" and \"they picked up their basket\", not \"they was\").\n" +
+      "- Structure: a cozy beginning, one small gentle adventure in the middle, and a soft, sleepy, happy ending — the characters should end the story feeling safe, cozy, and ready to fall asleep.\n" +
+      "- Write in paragraphs, each a few sentences long.\n\n" +
+      "Reply with ONLY a JSON object of this exact shape, and nothing else outside the JSON:\n" +
+      "{\"title\": string, \"story\": string}\n" +
+      "where \"story\" contains the full story text with paragraphs separated by a blank line (\\n\\n).";
+  }
+
+  var ERROR_COPY = {
+    server_not_configured: { permanent: true,  text: "This story maker hasn't finished being set up yet (the server is missing its API key)." },
+    rate_limited:           { permanent: false, text: "\u{1F634} The story fairy is very busy right now. Let's wait a little and try again." },
+    refused:                { permanent: false, text: "\u{1F914} The story fairy couldn't write that one. Try different choices!" },
+    empty_completion:       { permanent: false, text: "\u{1F4D6} The story fairy went quiet. Let's try again." },
+    invalid_json:           { permanent: false, text: "\u{1F4D6} The story got a little jumbled. Let's try again." },
+    upstream_error:         { permanent: false, text: "⛅ A little cloud got in the way. Let's try again." },
+    invalid_request:        { permanent: false, text: "\u{1F914} Something went wrong setting up the story. Let's try again." },
+    prompt_too_large:       { permanent: false, text: "\u{1F4DA} That was a lot to ask for at once. Let's try again." },
+    network_error:          { permanent: false, text: "\u{1F32B}️ Couldn't reach the story fairy. Check your connection and try again." }
+  };
+  var DEFAULT_ERROR = { permanent: false, text: "⛅ Something went wrong. Let's try again." };
+
+  function setLoading(isLoading){
+    if (isLoading){
+      els.createBtn.disabled = true;
+      els.result.hidden = false;
+      els.result.innerHTML =
+        '<div class="loading">' +
+          '<div class="loading-moon" aria-hidden="true">\u{1F319}</div>' +
+          '<p class="loading-text" id="loadingText">' + LOADING_MESSAGES[0] + '</p>' +
+        '</div>';
+      els.result.scrollIntoView({ behavior: "smooth", block: "start" });
+      var i = 0;
+      loadingTimer = setInterval(function(){
+        i = (i + 1) % LOADING_MESSAGES.length;
+        var t = document.getElementById("loadingText");
+        if (t) t.textContent = LOADING_MESSAGES[i];
+      }, 2600);
+    } else {
+      if (loadingTimer){ clearInterval(loadingTimer); loadingTimer = null; }
+    }
+  }
+
+  function displayName(item, name){
+    if (!item) return "";
+    return sanitizeName(name) || item.label;
+  }
+
+  function showStory(data){
+    cancelSpeech();
+
+    var title = (data && typeof data.title === "string" && data.title.trim()) || "A Bedtime Story";
+    var story = (data && typeof data.story === "string" && data.story.trim()) || "";
+    var a1 = byId(ANIMALS, selections.animal1);
+    var a2 = byId(ANIMALS, selections.animal2);
+    var d = byId(DINOSAURS, selections.dino);
+    var n1 = displayName(a1, selections.name1);
+    var n2 = displayName(a2, selections.name2);
+    var n3 = displayName(d, selections.name3);
+    var len = byId(LENGTHS, selections.length) || byId(LENGTHS, DEFAULT_LENGTH);
+
+    var paragraphs = story.split(/\n\s*\n/).filter(function(p){ return p.trim().length > 0; });
+    var canRead = speechSupported();
+    var readControlsHtml = canRead
+      ? '<div class="read-aloud-row">' +
+          '<button type="button" id="readAloudBtn" class="read-btn">\u{1F50A} Read Aloud</button>' +
+          '<button type="button" id="stopReadBtn" class="stop-btn" hidden>⏹️ Stop</button>' +
+        '</div>'
+      : '';
+    var html = '<div class="story-card">' +
+      '<p class="story-meta">\u{1F319} A ' + len.adj + ' bedtime story for ' + escapeHtml(n1) + ', ' + escapeHtml(n2) + ' &amp; ' + escapeHtml(n3) + ' fans</p>' +
+      '<h3 class="story-title">' + escapeHtml(title) + '</h3>' +
+      '<p class="story-divider" aria-hidden="true">✦ ✦ ✦</p>' +
+      readControlsHtml +
+      '<div class="story-text">' + paragraphs.map(function(p){ return "<p>" + escapeHtml(p.trim()) + "</p>"; }).join("") + '</div>' +
+      '</div>' +
+      '<div class="again-row"><button type="button" id="againBtn">\u{1F4D6} Tell Another Story</button></div>';
+
+    els.result.innerHTML = html;
+    document.getElementById("againBtn").addEventListener("click", resetAll);
+
+    if (canRead){
+      document.getElementById("readAloudBtn").addEventListener("click", onReadAloudClick);
+      document.getElementById("stopReadBtn").addEventListener("click", onStopClick);
+    }
+  }
+
+  /* ---------- Read aloud (Web Speech API) ---------- */
+
+  function speechSupported(){
+    return !!(window.speechSynthesis && window.SpeechSynthesisUtterance);
+  }
+
+  function clearParagraphHighlight(){
+    (speechState.paragraphEls || []).forEach(function(p){ if (p) p.classList.remove("speaking"); });
+  }
+
+  function cancelSpeech(){
+    if (speechSupported()) window.speechSynthesis.cancel();
+    clearParagraphHighlight();
+    speechState.mode = "idle";
+    speechState.idx = 0;
+  }
+
+  function updateReadUI(){
+    var btn = document.getElementById("readAloudBtn");
+    var stopBtn = document.getElementById("stopReadBtn");
+    if (!btn) return;
+    if (speechState.mode === "playing"){
+      btn.textContent = "⏸️ Pause";
+    } else if (speechState.mode === "paused"){
+      btn.textContent = "▶️ Resume";
+    } else {
+      btn.textContent = "\u{1F50A} Read Aloud";
+    }
+    if (stopBtn) stopBtn.hidden = (speechState.mode === "idle");
+  }
+
+  function readAloudStart(){
+    if (!speechSupported()) return;
+    window.speechSynthesis.cancel();
+
+    var storyTextEl = els.result.querySelector(".story-text");
+    if (!storyTextEl) return;
+    var paragraphEls = Array.prototype.slice.call(storyTextEl.querySelectorAll("p"));
+    if (!paragraphEls.length) return;
+
+    speechState.paragraphEls = paragraphEls;
+    speechState.mode = "playing";
+    speechState.idx = 0;
+
+    var utterances = paragraphEls.map(function(p, i){
+      var u = new SpeechSynthesisUtterance(p.textContent);
+      u.rate = 0.95;
+      u.onstart = function(){
+        clearParagraphHighlight();
+        p.classList.add("speaking");
+        p.scrollIntoView({ behavior: "smooth", block: "center" });
+        speechState.idx = i;
+        speechState.mode = "playing";
+        updateReadUI();
+      };
+      u.onerror = function(ev){
+        if (ev && (ev.error === "interrupted" || ev.error === "canceled")) return;
+        speechState.mode = "idle";
+        clearParagraphHighlight();
+        updateReadUI();
+      };
+      return u;
+    });
+    utterances[utterances.length - 1].onend = function(){
+      speechState.mode = "idle";
+      speechState.idx = 0;
+      clearParagraphHighlight();
+      updateReadUI();
+    };
+
+    utterances.forEach(function(u){ window.speechSynthesis.speak(u); });
+    updateReadUI();
+  }
+
+  function onReadAloudClick(){
+    if (!speechSupported()) return;
+    if (speechState.mode === "playing"){
+      window.speechSynthesis.pause();
+      speechState.mode = "paused";
+      updateReadUI();
+    } else if (speechState.mode === "paused"){
+      window.speechSynthesis.resume();
+      speechState.mode = "playing";
+      updateReadUI();
+    } else {
+      readAloudStart();
+    }
+  }
+
+  function onStopClick(){
+    cancelSpeech();
+    updateReadUI();
+  }
+
+  function escapeHtml(str){
+    return String(str)
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;");
+  }
+
+  function showNotice(message, isError){
+    els.result.hidden = false;
+    els.result.innerHTML = '<div class="notice' + (isError ? " error" : "") + '">' + escapeHtml(message) + '</div>';
+    els.result.scrollIntoView({ behavior: "smooth", block: "start" });
+  }
+
+  function handleError(e){
+    var code = e && e.code;
+    var copy = (code && ERROR_COPY[code]) || DEFAULT_ERROR;
+    if (copy.permanent){
+      permanentlyUnavailable = true;
+      els.createBtn.disabled = true;
+      els.statusNote.textContent = "";
+      showNotice(copy.text, false);
+    } else {
+      els.createBtn.disabled = !(selections.animal1 && selections.animal2 && selections.dino && selections.setting && selections.adventure);
+      showNotice(copy.text + " (Tap Create Story to try again.)", true);
+    }
+  }
+
+  function resetAll(){
+    cancelSpeech();
+    selections = {
+      animal1: null, animal2: null, dino: null, setting: null, adventure: null,
+      length: DEFAULT_LENGTH,
+      name1: "", name2: "", name3: "",
+      pronoun1: DEFAULT_PRONOUN, pronoun2: DEFAULT_PRONOUN, pronoun3: DEFAULT_PRONOUN
+    };
+    [els.gridAnimal1, els.gridAnimal2, els.gridDino, els.gridSetting, els.gridAdventure, els.gridLength].forEach(function(g){
+      Array.prototype.forEach.call(g.querySelectorAll(".pick-btn"), function(b){
+        b.setAttribute("aria-pressed", "false");
+      });
+    });
+    selectDefault(els.gridLength, DEFAULT_LENGTH);
+    els.nameAnimal1.value = "";
+    els.nameAnimal2.value = "";
+    els.nameDino.value = "";
+    els.pronounAnimal1.value = DEFAULT_PRONOUN;
+    els.pronounAnimal2.value = DEFAULT_PRONOUN;
+    els.pronounDino.value = DEFAULT_PRONOUN;
+    updateRecipe();
+    els.result.hidden = true;
+    els.result.innerHTML = "";
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }
+
+  function selectDefault(container, defaultId){
+    var btn = container.querySelector('[data-id="' + defaultId + '"]');
+    if (btn) btn.setAttribute("aria-pressed", "true");
+  }
+
+  async function createStory(){
+    var complete = !!(selections.animal1 && selections.animal2 && selections.dino && selections.setting && selections.adventure);
+    if (!complete || permanentlyUnavailable) return;
+
+    cancelSpeech();
+    setLoading(true);
+
+    var lengthItem = byId(LENGTHS, selections.length) || byId(LENGTHS, DEFAULT_LENGTH);
+
+    var res;
+    try {
+      res = await fetch("/api/generate-story", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ prompt: buildPrompt(), maxTokens: lengthItem.maxTokens })
+      });
+    } catch (networkErr) {
+      setLoading(false);
+      handleError({ code: "network_error" });
+      return;
+    }
+
+    var data = null;
+    try { data = await res.json(); } catch (parseErr) { data = null; }
+
+    if (!res.ok){
+      setLoading(false);
+      handleError({ code: (data && data.error) || "upstream_error" });
+      return;
+    }
+    if (!data || typeof data.title !== "string" || typeof data.story !== "string"){
+      setLoading(false);
+      handleError({ code: "invalid_json" });
+      return;
+    }
+
+    setLoading(false);
+    els.createBtn.disabled = false;
+    showStory(data);
+  }
+
+  buildGrid(els.gridAnimal1, ANIMALS, "animal1");
+  buildGrid(els.gridAnimal2, ANIMALS, "animal2");
+  buildGrid(els.gridDino, DINOSAURS, "dino");
+  buildGrid(els.gridSetting, SETTINGS, "setting");
+  buildGrid(els.gridAdventure, ADVENTURES, "adventure");
+  buildGrid(els.gridLength, LENGTHS, "length");
+  selectDefault(els.gridLength, DEFAULT_LENGTH);
+  els.createBtn.addEventListener("click", createStory);
+  els.nameAnimal1.addEventListener("input", function(){ selections.name1 = els.nameAnimal1.value; updateRecipe(); });
+  els.nameAnimal2.addEventListener("input", function(){ selections.name2 = els.nameAnimal2.value; updateRecipe(); });
+  els.nameDino.addEventListener("input", function(){ selections.name3 = els.nameDino.value; updateRecipe(); });
+  els.pronounAnimal1.addEventListener("change", function(){ selections.pronoun1 = els.pronounAnimal1.value; });
+  els.pronounAnimal2.addEventListener("change", function(){ selections.pronoun2 = els.pronounAnimal2.value; });
+  els.pronounDino.addEventListener("change", function(){ selections.pronoun3 = els.pronounDino.value; });
+  window.addEventListener("pagehide", function(){ if (speechSupported()) window.speechSynthesis.cancel(); });
+  updateRecipe();
+  updateProgress();
+})();
+</script>
+</body>
+</html>
