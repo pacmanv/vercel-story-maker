@@ -4,15 +4,47 @@
 // Set ANTHROPIC_API_KEY in your Vercel project's Environment Variables
 // (Project Settings -> Environment Variables) before deploying.
 
-// Very lightweight per-IP rate limit. This is best-effort only: it lives in
-// memory, so it resets whenever the serverless instance is recycled and
-// does not share state across multiple instances. It exists to blunt
-// accidental abuse (e.g. someone leaving the tab open and mashing the
-// button), not to be a real defense. For a public site you plan to share
-// widely, consider a proper rate limiter backed by KV/Redis instead.
-const rateLimitStore = new Map();
-const RATE_LIMIT_WINDOW_MS = 60 * 1000;
-const RATE_LIMIT_MAX = 5;
+// Rate limiting is enforced by Vercel's built-in Firewall (WAF) rather than
+// an in-process counter, so it's shared across every serverless instance
+// and actually holds up under real concurrent traffic (the old in-memory
+// Map reset per-instance and didn't share state — fine for one person
+// mashing the button, not for a public launch). The rule itself (20
+// requests / 60s per IP) is configured in the Vercel dashboard under
+// Project -> Firewall -> Rules -> "generate-story-rate-limit", and this
+// code just asks that rule whether the current request should be blocked.
+//
+// checkRateLimit() expects a standard Web `Request` object, but this
+// function uses the classic Node (req, res) handler shape, so we build a
+// minimal Request from the incoming req below. If the rate-limit check
+// itself fails for any reason (transient network hiccup talking to the
+// Firewall service, etc.), we log it and let the request through rather
+// than taking the whole story generator down over a rate-limit hiccup.
+const RATE_LIMIT_RULE_ID = "rule_generate_story_rate_limit_X6dk5A";
+
+function buildWebRequest(req) {
+  const proto = req.headers["x-forwarded-proto"] || "https";
+  const host = req.headers["x-forwarded-host"] || req.headers.host || "localhost";
+  const headers = new Headers();
+  for (const [key, value] of Object.entries(req.headers || {})) {
+    if (value == null) continue;
+    headers.set(key, Array.isArray(value) ? value.join(", ") : String(value));
+  }
+  return new Request(`${proto}://${host}${req.url || "/"}`, {
+    method: req.method || "GET",
+    headers
+  });
+}
+
+async function isRateLimited(req) {
+  try {
+    const { checkRateLimit } = await import("@vercel/firewall");
+    const result = await checkRateLimit(RATE_LIMIT_RULE_ID, { request: buildWebRequest(req) });
+    return !!(result && result.rateLimited);
+  } catch (e) {
+    console.error("Rate limit check failed, allowing request through", e && e.message);
+    return false;
+  }
+}
 
 module.exports = async function handler(req, res) {
   if (req.method !== "POST") {
@@ -38,16 +70,9 @@ module.exports = async function handler(req, res) {
     ? Math.min(Math.max(Math.round(requestedMaxTokens), 500), 6000)
     : 3000;
 
-  const ip = String((req.headers["x-forwarded-for"] || req.socket.remoteAddress || "unknown"))
-    .split(",")[0]
-    .trim();
-  const now = Date.now();
-  const recentHits = (rateLimitStore.get(ip) || []).filter((t) => now - t < RATE_LIMIT_WINDOW_MS);
-  if (recentHits.length >= RATE_LIMIT_MAX) {
+  if (await isRateLimited(req)) {
     return res.status(429).json({ error: "rate_limited" });
   }
-  recentHits.push(now);
-  rateLimitStore.set(ip, recentHits);
 
   try {
     const upstream = await fetch("https://api.anthropic.com/v1/messages", {
